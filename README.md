@@ -12,65 +12,200 @@ This template gives you:
 
 ---
 
-## Quick Start
+## Setup on macOS (Step by Step)
 
-### 1. Install LaTeX
+You already ran `brew install --cask mactex`. Follow every step below in order.
 
-**Ubuntu/Debian:**
+### Step 1: Make LaTeX available in your terminal
+
+MacTeX installs to `/Library/TeX/texbin/` but your shell may not see it yet. **Close your terminal and open a brand new one**, then check:
+
 ```bash
-sudo apt update
-sudo apt install texlive-full latexmk
+pdflatex --version
 ```
 
-**Fedora:**
+If it prints version info, skip to Step 2. If it says `command not found`, add it to your PATH manually:
+
 ```bash
-sudo dnf install texlive-scheme-full latexmk
+# For zsh (default on modern macOS):
+echo 'export PATH="/Library/TeX/texbin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+
+# For bash:
+echo 'export PATH="/Library/TeX/texbin:$PATH"' >> ~/.bash_profile
+source ~/.bash_profile
 ```
 
-**macOS (via Homebrew):**
-```bash
-brew install --cask mactex
-```
-After installing, open a new terminal so `pdflatex` and `latexmk` are on your PATH.
+Verify everything works:
 
-**Windows:**
-Install [MiKTeX](https://miktex.org/download) or [TeX Live](https://tug.org/texlive/windows.html). Make sure `pdflatex` and `latexmk` are available in your terminal.
-
-**Verify installation:**
 ```bash
 pdflatex --version
 latexmk --version
 ```
 
-### 2. Compile the Template
+Both commands should print version information. If `latexmk` is missing, install it:
+
+```bash
+sudo tlmgr install latexmk
+```
+
+### Step 2: Install Inkscape (for hand-drawn diagrams)
+
+This is optional but needed if you want to draw figures like Castel does.
+
+```bash
+brew install --cask inkscape
+```
+
+After install, verify:
+
+```bash
+inkscape --version
+```
+
+### Step 3: Install a PDF viewer that auto-refreshes
+
+When you save your `.tex` file, you want the PDF to update live. The built-in Preview app does NOT do this. Install Skim:
+
+```bash
+brew install --cask skim
+```
+
+Then configure Skim to auto-reload:
+1. Open Skim
+2. Go to **Skim > Settings** (or `Cmd+,`)
+3. Click the **Sync** tab
+4. Check **"Check for file changes"**
+5. Select **"Reload automatically"**
+
+### Step 4: Clone this repository
+
+```bash
+cd ~/Documents   # or wherever you keep your projects
+git clone https://github.com/Jose-Gael-Cruz-Lopez/Gilles-Castel-s-Lecture-Notes-Math-Science-.git
+cd Gilles-Castel-s-Lecture-Notes-Math-Science-
+```
+
+### Step 5: Compile the template for the first time
 
 ```bash
 cd course-template
-
-# Single compilation (run twice for TOC/references)
 make
-
-# OR compile manually
-pdflatex -shell-escape master.tex
-pdflatex -shell-escape master.tex
-
-# OR use latexmk for auto-recompilation on save
-make watch
-# (this watches for file changes and recompiles automatically)
 ```
 
-The output is `master.pdf` in the `course-template/` directory.
+This runs `pdflatex` twice (needed for table of contents and cross-references). You should see output scrolling by and it should end without errors.
 
-### 3. Start Taking Notes
+If `make` is not found, install Xcode command line tools first:
 
-1. Open `master.tex` and change the `\title`, `\author`, and `\date`.
-2. Edit `lec_01.tex` or create new lecture files (`lec_02.tex`, `lec_03.tex`, ...).
-3. Add `\input{lec_02.tex}` lines in `master.tex`.
-4. Each lecture file starts with:
+```bash
+xcode-select --install
+```
+
+Then run `make` again.
+
+### Step 6: Open the PDF
+
+```bash
+open -a Skim master.pdf
+```
+
+You should see a multi-page PDF with definitions, theorems, TikZ diagrams, commutative diagrams, function plots, and vector fields. This is the example lecture.
+
+### Step 7: Start live-editing
+
+Open a second terminal tab/window and run:
+
+```bash
+cd ~/Documents/Gilles-Castel-s-Lecture-Notes-Math-Science-/course-template
+make watch
+```
+
+This watches for file changes and recompiles automatically. Now open a `.tex` file in your editor, make a change, save -- Skim will update within a few seconds.
+
+### Step 8: Personalize the template
+
+1. Open `master.tex` and change `\title`, `\author`, and `\date`
+2. Edit `lec_01.tex` (the example lecture) or delete its content and start fresh
+3. To add more lectures, create `lec_02.tex`, `lec_03.tex`, etc. and add `\input{lec_02.tex}` lines in `master.tex`
+4. Each lecture starts with:
    ```latex
    \lecture{2}{Wed 05 Feb 2025 14:00}{Subgroups and Cosets}
    ```
-   This creates a section heading and puts the date in the margin.
+   This creates a heading and puts the date in the margin.
+
+### Step 9: Create a new course (optional)
+
+To start a separate set of notes for another class:
+
+```bash
+cp -r course-template/ my-algebra-course/
+cd my-algebra-course/
+# Edit master.tex, start writing lec_01.tex
+make watch
+```
+
+---
+
+## Troubleshooting (macOS)
+
+**`pdflatex: command not found` after installing MacTeX:**
+Close ALL terminal windows and open a fresh one. If still broken, run:
+```bash
+eval "$(/usr/libexec/path_helper)"
+```
+or add the PATH manually as shown in Step 1.
+
+**`make: command not found`:**
+```bash
+xcode-select --install
+```
+
+**Missing LaTeX package errors (e.g., `! LaTeX Error: File 'stmaryrd.sty' not found`):**
+MacTeX Full includes everything, but if you used BasicTeX or something is missing:
+```bash
+sudo tlmgr update --self
+sudo tlmgr install stmaryrd mdframed tcolorbox pgfplots tikz-cd siunitx systeme
+```
+
+**Skim not reloading:**
+Make sure "Reload automatically" is checked in Skim > Settings > Sync.
+
+**Inkscape export not working:**
+Make sure you're using Inkscape 1.0+ (the command-line flags changed from older versions). Check with `inkscape --version`.
+
+---
+
+## Setup on Other Platforms
+
+<details>
+<summary><b>Ubuntu/Debian</b></summary>
+
+```bash
+sudo apt update
+sudo apt install texlive-full latexmk inkscape
+cd course-template && make
+```
+Use Zathura (`sudo apt install zathura`) as your PDF viewer -- it auto-reloads on file change.
+</details>
+
+<details>
+<summary><b>Fedora</b></summary>
+
+```bash
+sudo dnf install texlive-scheme-full latexmk inkscape
+cd course-template && make
+```
+</details>
+
+<details>
+<summary><b>Windows</b></summary>
+
+1. Install [MiKTeX](https://miktex.org/download) or [TeX Live](https://tug.org/texlive/windows.html)
+2. Make sure `pdflatex` and `latexmk` are on your PATH
+3. Install [Inkscape](https://inkscape.org) for figures
+4. Use [SumatraPDF](https://www.sumatrapdfreader.org) as your viewer (auto-reloads)
+5. Compile: `pdflatex -shell-escape master.tex` (run twice)
+</details>
 
 ---
 
