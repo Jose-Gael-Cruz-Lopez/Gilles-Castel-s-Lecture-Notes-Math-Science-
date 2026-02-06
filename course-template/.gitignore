@@ -1,0 +1,18 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.pdf
+
+# But keep pdf_tex files (Inkscape export)
+!figures/*.pdf_tex
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/

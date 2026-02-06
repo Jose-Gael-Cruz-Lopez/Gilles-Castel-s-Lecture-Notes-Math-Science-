@@ -1,0 +1,32 @@
+% =============================================================================
+% Master document — compile this file
+% =============================================================================
+\documentclass[a4paper, 12pt]{report}
+
+\input{preamble.tex}
+
+% --- Course-specific macros (add your own here) ---
+% Example: custom operators for your course
+% \DeclareMathOperator{\Aut}{Aut}
+% \DeclareMathOperator{\Hom}{Hom}
+% \DeclareMathOperator{\ker}{ker}
+% \DeclareMathOperator{\im}{im}
+
+\title{Course Title}
+\author{Your Name}
+\date{Spring 2025}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+% Include your lecture files here.
+% Add new lectures as: \input{lec_02.tex}, \input{lec_03.tex}, etc.
+%
+% Tip from Castel: for faster compilation, comment out old lectures
+% and only keep the most recent 2-3 uncommented.
+
+\input{lec_01.tex}
+
+\end{document}

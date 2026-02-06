@@ -1,0 +1,216 @@
+% =============================================================================
+% Preamble for Lecture Notes
+% Adapted from Gilles Castel's university-setup
+% https://castel.dev/post/lecture-notes-1/
+% =============================================================================
+
+% --- Core packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[english]{babel}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\pdfminorversion=7
+
+% Don't indent paragraphs, leave some space between them
+\usepackage{parskip}
+
+% Hide page number when page is empty
+\usepackage{emptypage}
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{xcolor}
+
+% --- Math packages ---
+\usepackage{amsmath, amsfonts, mathtools, amsthm, amssymb}
+\usepackage{mathrsfs}   % Fancy script capitals
+\usepackage{cancel}      % Cancel terms in equations
+\usepackage{bm}          % Bold math
+
+% --- Common math shortcuts ---
+\newcommand\N{\ensuremath{\mathbb{N}}}
+\newcommand\R{\ensuremath{\mathbb{R}}}
+\newcommand\Z{\ensuremath{\mathbb{Z}}}
+\renewcommand\O{\ensuremath{\emptyset}}
+\newcommand\Q{\ensuremath{\mathbb{Q}}}
+\newcommand\C{\ensuremath{\mathbb{C}}}
+\newcommand\F{\ensuremath{\mathbb{F}}}
+
+% Put x \to \infty below \lim
+\let\svlim\lim\def\lim{\svlim\limits}
+
+% Shorter implies/iff arrows
+\let\implies\Rightarrow
+\let\impliedby\Leftarrow
+\let\iff\Leftrightarrow
+\let\epsilon\varepsilon
+
+% Contradiction symbol
+\usepackage{stmaryrd}
+\newcommand\contra{\scalebox{1.5}{$\lightning$}}
+
+% Correction markup: \correct{wrong}{right}
+\definecolor{correct}{HTML}{009900}
+\newcommand\correct[2]{\ensuremath{\:}{\color{red}{#1}}\ensuremath{\to }{\color{correct}{#2}}\ensuremath{\:}}
+\newcommand\green[1]{{\color{correct}{#1}}}
+
+% Horizontal rule
+\newcommand\hr{\noindent\rule[0.5ex]{\linewidth}{0.5pt}}
+
+% SI units
+\usepackage{siunitx}
+\sisetup{locale = US}
+
+% Systems of equations
+\usepackage{systeme}
+
+% --- Theorem-like environments (boxed) ---
+\makeatother
+\usepackage{mdframed}
+\mdfsetup{skipabove=1em,skipbelow=0em}
+
+\theoremstyle{definition}
+
+% Boxed (numbered) environments
+\newmdtheoremenv[nobreak=true]{definition}{Definition}[section]
+\newmdtheoremenv[nobreak=true]{theorem}{Theorem}[section]
+\newmdtheoremenv[nobreak=true]{lemma}{Lemma}[section]
+\newmdtheoremenv[nobreak=true]{corollary}{Corollary}[section]
+\newmdtheoremenv[nobreak=true]{prop}{Proposition}[section]
+\newmdtheoremenv[nobreak=true]{axiom}{Axiom}[section]
+\newmdtheoremenv{conjecture}{Conjecture}[section]
+
+% Non-boxed (unnumbered) environments
+\newtheorem*{eg}{Example}
+\newtheorem*{notation}{Notation}
+\newtheorem*{previouslyseen}{As previously seen}
+\newtheorem*{remark}{Remark}
+\newtheorem*{note}{Note}
+\newtheorem*{problem}{Problem}
+\newtheorem*{observe}{Observe}
+\newtheorem*{property}{Property}
+\newtheorem*{intuition}{Intuition}
+\newtheorem*{recall}{Recall}
+\newtheorem*{exercise}{Exercise}
+
+% End example environments with a diamond
+\usepackage{etoolbox}
+\AtEndEnvironment{eg}{\null\hfill$\diamond$}%
+
+% Fix spacing around theorem environments
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=\parskip \thm@postskip=0pt
+}
+
+% --- Lecture header command ---
+% Usage: \lecture{1}{Mon 03 Feb 2025 10:00}{Introduction to Group Theory}
+\usepackage{xifthen}
+\def\testdateparts#1{\dateparts#1\relax}
+\def\dateparts#1 #2 #3 #4 #5\relax{
+    \marginpar{\small\textsf{\mbox{#1 #2 #3 #5}}}
+}
+
+\def\@lecture{}%
+\newcommand{\lecture}[3]{
+    \ifthenelse{\isempty{#3}}{%
+        \def\@lecture{Lecture #1}%
+    }{%
+        \def\@lecture{Lecture #1: #3}%
+    }%
+    \subsection*{\@lecture}
+    \marginpar{\small\textsf{\mbox{#2}}}
+}
+
+% --- Fancy headers ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\fancyhead[RO,LE]{\@lecture}
+\fancyhead[RE,LO]{}
+\fancyfoot[RO,LE]{\thepage}
+\fancyfoot[RE,LO]{}
+\fancyfoot[C]{\leftmark}
+
+\makeatother
+
+% --- Note / correction boxes ---
+\usepackage{todonotes}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+
+% Correction box (green border)
+\newenvironment{correction}{\begin{tcolorbox}[
+    arc=0mm,
+    colback=white,
+    colframe=green!60!black,
+    title=Correction,
+    fonttitle=\sffamily,
+    breakable
+]}{\end{tcolorbox}}
+
+% Generic note box
+\newenvironment{notebox}[1]{\begin{tcolorbox}[
+    arc=0mm,
+    colback=white,
+    colframe=white!60!black,
+    title=#1,
+    fonttitle=\sffamily,
+    breakable
+]}{\end{tcolorbox}}
+
+% Important box (red border)
+\newenvironment{important}[1]{\begin{tcolorbox}[
+    arc=0mm,
+    colback=red!5,
+    colframe=red!60!black,
+    title=#1,
+    fonttitle=\sffamily,
+    breakable
+]}{\end{tcolorbox}}
+
+% --- Figure support (Inkscape integration) ---
+\usepackage{import}
+\usepackage{pdfpages}
+\usepackage{transparent}
+\newcommand{\incfig}[1]{%
+    \def\svgwidth{\columnwidth}
+    \import{./figures/}{#1.pdf_tex}
+}
+
+% Suppress PDF page group warnings
+\pdfsuppresswarningpagegroup=1
+
+% --- TikZ support ---
+\usepackage{tikz}
+\usepackage{tikz-cd}       % Commutative diagrams
+\usepackage{pgfplots}       % Plots and graphs
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{
+    arrows.meta,
+    calc,
+    decorations.markings,
+    decorations.pathreplacing,
+    intersections,
+    patterns,
+    positioning,
+    shapes.geometric,
+    angles,
+    quotes,
+    babel
+}
+
+% --- Hyperlinks (load last) ---
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!60!black,
+    urlcolor=blue!60!black,
+    citecolor=green!60!black,
+}
+\usepackage[nameinlink]{cleveref}
