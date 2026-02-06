@@ -1,0 +1,63 @@
+{
+    // =========================================================================
+    // LaTeX Workshop — auto-compile and PDF preview
+    // =========================================================================
+    //
+    // macOS: uses full path /Library/TeX/texbin/pdflatex because VS Code
+    //        GUI apps do NOT inherit your terminal PATH.
+    //
+    // Windows/Linux: change the "command" values below from
+    //        "/Library/TeX/texbin/pdflatex" to just "pdflatex"
+    //        and "/Library/TeX/texbin/latexmk"  to just "latexmk"
+    // =========================================================================
+
+    "latex-workshop.latex.autoBuild.run": "onSave",
+
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "pdflatex x2",
+            "tools": ["pdflatex", "pdflatex"]
+        },
+        {
+            "name": "latexmk",
+            "tools": ["latexmk"]
+        }
+    ],
+
+    "latex-workshop.latex.tools": [
+        {
+            "name": "pdflatex",
+            "command": "/Library/TeX/texbin/pdflatex",
+            "args": [
+                "-interaction=nonstopmode",
+                "-shell-escape",
+                "%DOC%"
+            ],
+            "env": {
+                "PATH": "/Library/TeX/texbin:/usr/local/bin:/usr/bin:/bin"
+            }
+        },
+        {
+            "name": "latexmk",
+            "command": "/Library/TeX/texbin/latexmk",
+            "args": [
+                "-pdf",
+                "-interaction=nonstopmode",
+                "-shell-escape",
+                "%DOC%"
+            ],
+            "env": {
+                "PATH": "/Library/TeX/texbin:/usr/local/bin:/usr/bin:/bin"
+            }
+        }
+    ],
+
+    "latex-workshop.view.pdf.viewer": "tab",
+
+    "editor.wordWrap": "on",
+    "editor.minimap.enabled": false,
+
+    "files.associations": {
+        "*.tex": "latex"
+    }
+}

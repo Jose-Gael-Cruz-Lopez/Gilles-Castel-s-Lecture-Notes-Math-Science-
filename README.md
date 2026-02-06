@@ -146,26 +146,28 @@ git clone https://github.com/Jose-Gael-Cruz-Lopez/Gilles-Castel-s-Lecture-Notes-
 
 ### Step 7: Open the project in VS Code
 
+**IMPORTANT:** Do NOT just open a random folder. Open the **workspace file** — this is what makes auto-compilation and PDF preview work:
+
 ```bash
-code ~/Documents/Gilles-Castel-s-Lecture-Notes-Math-Science-
+open ~/Documents/Gilles-Castel-s-Lecture-Notes-Math-Science-/lecture-notes.code-workspace
 ```
 
-VS Code will open with the project files in the sidebar.
+Or: In Finder, navigate to the cloned folder and **double-click `lecture-notes.code-workspace`**.
+
+VS Code will open with `course-template` as the workspace root and all LaTeX settings pre-configured.
 
 ### Step 8: Compile the template for the first time
 
-In VS Code:
+1. In the sidebar, click on `master.tex` to open it
+2. **Press `Cmd + S`** — this triggers compilation automatically
+3. You will see a spinning icon in the bottom status bar while it compiles
+4. When it finishes (checkmark in the status bar), the PDF is ready
 
-1. In the sidebar, click on `course-template` to expand it
-2. Click on `master.tex` to open it
-3. The LaTeX Workshop extension will detect this is a LaTeX file. **Press `Cmd + S` to save** (even if you haven't changed anything) — this triggers compilation
-4. You will see a spinning icon in the bottom status bar while it compiles
-
-Or compile from the terminal (inside VS Code, press `` Ctrl + ` `` to open the built-in terminal):
+If auto-compilation doesn't trigger, compile from the terminal (press `` Ctrl + ` `` to open it):
 
 ```bash
-cd ~/Documents/Gilles-Castel-s-Lecture-Notes-Math-Science-/course-template
-make
+/Library/TeX/texbin/pdflatex -interaction=nonstopmode -shell-escape master.tex
+/Library/TeX/texbin/pdflatex -interaction=nonstopmode -shell-escape master.tex
 ```
 
 ### Step 9: View the PDF inside VS Code
@@ -224,35 +226,34 @@ code ~/Documents/my-algebra-course/
 
 ## VS Code Settings (Already Included)
 
-This repository includes a `.vscode/settings.json` file that automatically configures LaTeX Workshop when you open the project in VS Code. **You don't need to do anything manually** — just open the folder in VS Code and it works.
+This repository includes **three layers of protection** so compilation always works:
 
-The included settings:
-- Auto-compile on every save (`Cmd + S`)
-- Use full path to `pdflatex` (`/Library/TeX/texbin/pdflatex`) so macOS can find it
-- Run `pdflatex` twice for table of contents and cross-references
-- Show PDF in a VS Code tab
-- Word wrap enabled
+1. **`lecture-notes.code-workspace`** — a workspace file at the repo root. Opening this file (Step 7) is the recommended way to use this project. It sets the correct working directory and all LaTeX settings.
+2. **`course-template/.vscode/settings.json`** — if you open the `course-template/` folder directly, this file configures LaTeX Workshop.
+3. **`.vscode/settings.json`** — if you open the repo root folder directly, this file configures LaTeX Workshop.
 
-**If you're on Windows or Linux**, the macOS paths won't apply to you. Open `.vscode/settings.json` and change the `command` paths:
-- **Windows (MiKTeX):** change `/Library/TeX/texbin/pdflatex` to `pdflatex` (MiKTeX adds itself to PATH during install)
-- **Linux:** change `/Library/TeX/texbin/pdflatex` to `pdflatex` (texlive-full adds itself to PATH)
+All three use the full macOS path `/Library/TeX/texbin/pdflatex` so VS Code can always find it.
+
+**If you're on Windows or Linux**, open any of these files and change the `command` values:
+- **Windows (MiKTeX):** change `/Library/TeX/texbin/pdflatex` to `pdflatex`
+- **Linux:** change `/Library/TeX/texbin/pdflatex` to `pdflatex`
 
 ---
 
 ## Troubleshooting (macOS)
 
 **`spawn pdflatex ENOENT` or `spawn latexmk ENOENT` in VS Code:**
-This is the most common error. It means VS Code cannot find `pdflatex`. This project's `.vscode/settings.json` already fixes this by using the full path `/Library/TeX/texbin/pdflatex`. If you still get the error:
-1. Make sure you opened the **project folder** in VS Code (not just a single file). Use `code ~/Documents/Gilles-Castel-s-Lecture-Notes-Math-Science-` or File > Open Folder.
-2. Check that MacTeX is actually installed. Open Terminal (not VS Code terminal) and run:
-   ```bash
-   /Library/TeX/texbin/pdflatex --version
-   ```
-   If this says `No such file or directory`, MacTeX didn't install correctly. Run `brew install --cask mactex` again.
-3. If you still have issues, try restarting VS Code completely (quit with `Cmd + Q`, then reopen).
+This means VS Code cannot find `pdflatex`. Fix it by opening the **workspace file** instead of a folder:
+```bash
+open ~/Documents/Gilles-Castel-s-Lecture-Notes-Math-Science-/lecture-notes.code-workspace
+```
+Or in Finder, double-click `lecture-notes.code-workspace`. If you still get the error:
+1. Check that MacTeX is installed: open Terminal and run `/Library/TeX/texbin/pdflatex --version`
+2. If it says `No such file or directory`, reinstall: `brew install --cask mactex`
+3. Restart VS Code completely (`Cmd + Q`, then reopen the workspace file)
 
 **`pdflatex: command not found` in the terminal:**
-Close ALL terminal windows and open a fresh one. If still broken, run:
+Close ALL terminal windows and open a fresh one. If still broken:
 ```bash
 eval "$(/usr/libexec/path_helper)"
 ```
@@ -267,12 +268,7 @@ xcode-select --install
 You skipped Step 1. Go back and install Homebrew.
 
 **Text is tiny and doesn't fill the page:**
-This has been fixed in the template. The template now uses `letterpaper` with 1-inch margins. If you see small centered text, make sure you pulled the latest version:
-```bash
-cd ~/Documents/Gilles-Castel-s-Lecture-Notes-Math-Science-
-git pull
-```
-Then recompile (`Cmd + S` in VS Code or `make` in the terminal).
+The template uses `letterpaper` with 1-inch margins. If you see small centered text, you have an old version. Re-clone or `git pull`.
 
 **Missing LaTeX package errors (e.g., `! LaTeX Error: File 'stmaryrd.sty' not found`):**
 MacTeX Full includes everything, but if something is missing:
@@ -285,7 +281,7 @@ sudo tlmgr install stmaryrd mdframed tcolorbox pgfplots tikz-cd siunitx systeme 
 Press `Cmd + Shift + P`, type `latex pdf`, and click **"LaTeX Workshop: View LaTeX PDF file"**.
 
 **Inkscape export not working:**
-Make sure you're using Inkscape 1.0+ (the command-line flags changed from older versions). Check with `inkscape --version`.
+Make sure you're using Inkscape 1.0+. Check with `inkscape --version`.
 
 ---
 
@@ -361,22 +357,20 @@ cd %USERPROFILE%\Documents
 git clone https://github.com/Jose-Gael-Cruz-Lopez/Gilles-Castel-s-Lecture-Notes-Math-Science-.git
 ```
 
-Then open it in VS Code:
+Then open the workspace file — this auto-configures everything:
 
 ```bash
-code "%USERPROFILE%\Documents\Gilles-Castel-s-Lecture-Notes-Math-Science-"
+code "%USERPROFILE%\Documents\Gilles-Castel-s-Lecture-Notes-Math-Science-\lecture-notes.code-workspace"
 ```
+
+**Important (Windows only):** Open `course-template\.vscode\settings.json` and change both `command` paths from `/Library/TeX/texbin/pdflatex` to `pdflatex` and `/Library/TeX/texbin/latexmk` to `latexmk`.
 
 ### Step 8: Compile and view
 
-1. Open `course-template\master.tex`
-2. Press `Ctrl + S` to save/compile
+1. Open `master.tex` in the sidebar
+2. Press `Ctrl + S` to compile
 3. Press `Ctrl + Shift + P`, type `latex pdf`, click **"LaTeX Workshop: View LaTeX PDF file"**
 4. The PDF opens in a side tab. It updates automatically on every save.
-
-### Step 9: Add the VS Code settings
-
-Press `Ctrl + Shift + P`, type `settings json`, open **User Settings (JSON)**, and add the settings from the [VS Code Settings section](#vs-code-settings-for-latex-recommended) above.
 
 ### Step 10: Install Inkscape (optional)
 
@@ -461,14 +455,18 @@ git clone https://github.com/Jose-Gael-Cruz-Lopez/Gilles-Castel-s-Lecture-Notes-
 
 ### Step 7: Open, compile, and view
 
+Open the workspace file (this auto-configures LaTeX Workshop):
+
 ```bash
-code ~/Documents/Gilles-Castel-s-Lecture-Notes-Math-Science-
+code ~/Documents/Gilles-Castel-s-Lecture-Notes-Math-Science-/lecture-notes.code-workspace
 ```
 
-1. Open `course-template/master.tex`
+**Important (Linux only):** Open `.vscode/settings.json` and change both `command` paths from `/Library/TeX/texbin/pdflatex` to `pdflatex` and `/Library/TeX/texbin/latexmk` to `latexmk`.
+
+Then:
+1. Open `master.tex` in the sidebar
 2. Press `Ctrl + S` to compile
 3. Press `Ctrl + Shift + P`, type `latex pdf`, click **"LaTeX Workshop: View LaTeX PDF file"**
-4. Add the VS Code settings from the [VS Code Settings section](#vs-code-settings-for-latex-recommended) above
 
 ### Step 8: Install Inkscape (optional)
 
@@ -481,15 +479,20 @@ sudo apt install -y inkscape
 ## File Structure
 
 ```
-course-template/
-├── master.tex          # Main document — compile this file
-├── preamble.tex        # All packages, macros, and environments
-├── lec_01.tex          # Lecture 1 (example with all features)
-├── figures/            # Place Inkscape SVGs here
-│   └── .gitkeep
-├── Makefile            # make / make watch / make clean / make figures
-├── .latexmkrc          # latexmk configuration
-└── .gitignore          # Ignores build artifacts
+.
+├── lecture-notes.code-workspace  # Double-click this to open in VS Code (recommended)
+├── .vscode/settings.json        # VS Code settings (backup if workspace file not used)
+├── README.md
+└── course-template/
+    ├── .vscode/settings.json    # VS Code settings (if you open this folder directly)
+    ├── master.tex               # Main document — compile this file
+    ├── preamble.tex             # All packages, macros, and environments
+    ├── lec_01.tex               # Lecture 1 (example with all features)
+    ├── figures/                 # Place Inkscape SVGs here
+    │   └── .gitkeep
+    ├── Makefile                 # make / make watch / make clean / make figures
+    ├── .latexmkrc               # latexmk configuration
+    └── .gitignore               # Ignores build artifacts
 ```
 
 ---
