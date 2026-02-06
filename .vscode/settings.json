@@ -1,0 +1,63 @@
+{
+    // =========================================================================
+    // LaTeX Workshop configuration
+    // =========================================================================
+    //
+    // IMPORTANT (macOS): VS Code cannot find pdflatex/latexmk unless the full
+    // path is specified. MacTeX installs to /Library/TeX/texbin/.
+    // If you installed LaTeX somewhere else, update the paths below.
+
+    // --- Build settings ---
+    "latex-workshop.latex.autoBuild.run": "onSave",
+
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "pdflatex x2",
+            "tools": ["pdflatex", "pdflatex"]
+        },
+        {
+            "name": "latexmk",
+            "tools": ["latexmk"]
+        }
+    ],
+
+    "latex-workshop.latex.tools": [
+        {
+            "name": "pdflatex",
+            "command": "/Library/TeX/texbin/pdflatex",
+            "args": [
+                "-interaction=nonstopmode",
+                "-shell-escape",
+                "%DOC%"
+            ],
+            "env": {
+                "PATH": "/Library/TeX/texbin:/usr/local/bin:/usr/bin:/bin"
+            }
+        },
+        {
+            "name": "latexmk",
+            "command": "/Library/TeX/texbin/latexmk",
+            "args": [
+                "-pdf",
+                "-interaction=nonstopmode",
+                "-shell-escape",
+                "%DOC%"
+            ],
+            "env": {
+                "PATH": "/Library/TeX/texbin:/usr/local/bin:/usr/bin:/bin"
+            }
+        }
+    ],
+
+    // --- PDF viewer ---
+    "latex-workshop.view.pdf.viewer": "tab",
+
+    // --- Editor ---
+    "editor.wordWrap": "on",
+    "editor.minimap.enabled": false,
+
+    // --- File associations ---
+    "files.associations": {
+        "*.tex": "latex"
+    }
+}

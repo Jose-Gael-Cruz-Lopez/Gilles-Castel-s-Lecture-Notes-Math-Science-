@@ -222,47 +222,36 @@ code ~/Documents/my-algebra-course/
 
 ---
 
-## VS Code Settings for LaTeX (Recommended)
+## VS Code Settings (Already Included)
 
-After installing LaTeX Workshop, add these settings for the best experience. In VS Code, press `Cmd + Shift + P` (macOS) or `Ctrl + Shift + P` (Windows/Linux), type `settings json`, click **"Preferences: Open User Settings (JSON)"**, and add:
+This repository includes a `.vscode/settings.json` file that automatically configures LaTeX Workshop when you open the project in VS Code. **You don't need to do anything manually** — just open the folder in VS Code and it works.
 
-```json
-{
-    "latex-workshop.latex.autoBuild.run": "onSave",
-    "latex-workshop.latex.recipes": [
-        {
-            "name": "pdflatex x2",
-            "tools": ["pdflatex", "pdflatex"]
-        }
-    ],
-    "latex-workshop.latex.tools": [
-        {
-            "name": "pdflatex",
-            "command": "pdflatex",
-            "args": [
-                "-interaction=nonstopmode",
-                "-shell-escape",
-                "%DOC%"
-            ]
-        }
-    ],
-    "latex-workshop.view.pdf.viewer": "tab",
-    "editor.wordWrap": "on",
-    "editor.minimap.enabled": false
-}
-```
-
-This configures:
-- Auto-compile on save
-- Use `pdflatex` (run twice for references/TOC)
+The included settings:
+- Auto-compile on every save (`Cmd + S`)
+- Use full path to `pdflatex` (`/Library/TeX/texbin/pdflatex`) so macOS can find it
+- Run `pdflatex` twice for table of contents and cross-references
 - Show PDF in a VS Code tab
-- Word wrap for long LaTeX lines
+- Word wrap enabled
+
+**If you're on Windows or Linux**, the macOS paths won't apply to you. Open `.vscode/settings.json` and change the `command` paths:
+- **Windows (MiKTeX):** change `/Library/TeX/texbin/pdflatex` to `pdflatex` (MiKTeX adds itself to PATH during install)
+- **Linux:** change `/Library/TeX/texbin/pdflatex` to `pdflatex` (texlive-full adds itself to PATH)
 
 ---
 
 ## Troubleshooting (macOS)
 
-**`pdflatex: command not found` after installing MacTeX:**
+**`spawn pdflatex ENOENT` or `spawn latexmk ENOENT` in VS Code:**
+This is the most common error. It means VS Code cannot find `pdflatex`. This project's `.vscode/settings.json` already fixes this by using the full path `/Library/TeX/texbin/pdflatex`. If you still get the error:
+1. Make sure you opened the **project folder** in VS Code (not just a single file). Use `code ~/Documents/Gilles-Castel-s-Lecture-Notes-Math-Science-` or File > Open Folder.
+2. Check that MacTeX is actually installed. Open Terminal (not VS Code terminal) and run:
+   ```bash
+   /Library/TeX/texbin/pdflatex --version
+   ```
+   If this says `No such file or directory`, MacTeX didn't install correctly. Run `brew install --cask mactex` again.
+3. If you still have issues, try restarting VS Code completely (quit with `Cmd + Q`, then reopen).
+
+**`pdflatex: command not found` in the terminal:**
 Close ALL terminal windows and open a fresh one. If still broken, run:
 ```bash
 eval "$(/usr/libexec/path_helper)"
@@ -277,19 +266,19 @@ xcode-select --install
 **`brew: command not found`:**
 You skipped Step 1. Go back and install Homebrew.
 
-**VS Code says "Recipe terminated with error":**
-Open the terminal in VS Code (`` Ctrl + ` ``) and run:
+**Text is tiny and doesn't fill the page:**
+This has been fixed in the template. The template now uses `letterpaper` with 1-inch margins. If you see small centered text, make sure you pulled the latest version:
 ```bash
-cd course-template
-pdflatex -interaction=nonstopmode -shell-escape master.tex
+cd ~/Documents/Gilles-Castel-s-Lecture-Notes-Math-Science-
+git pull
 ```
-Read the error output. The most common issue is a missing package — see below.
+Then recompile (`Cmd + S` in VS Code or `make` in the terminal).
 
 **Missing LaTeX package errors (e.g., `! LaTeX Error: File 'stmaryrd.sty' not found`):**
 MacTeX Full includes everything, but if something is missing:
 ```bash
 sudo tlmgr update --self
-sudo tlmgr install stmaryrd mdframed tcolorbox pgfplots tikz-cd siunitx systeme
+sudo tlmgr install stmaryrd mdframed tcolorbox pgfplots tikz-cd siunitx systeme geometry
 ```
 
 **PDF not showing in VS Code:**
