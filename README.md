@@ -166,8 +166,8 @@ VS Code will open with `course-template` as the workspace root and all LaTeX set
 If auto-compilation doesn't trigger, compile from the terminal (press `` Ctrl + ` `` to open it):
 
 ```bash
-/Library/TeX/texbin/pdflatex -interaction=nonstopmode -shell-escape master.tex
-/Library/TeX/texbin/pdflatex -interaction=nonstopmode -shell-escape master.tex
+bash -l -c "pdflatex -interaction=nonstopmode -shell-escape master.tex"
+bash -l -c "pdflatex -interaction=nonstopmode -shell-escape master.tex"
 ```
 
 ### Step 9: View the PDF inside VS Code
@@ -220,6 +220,292 @@ To start a separate set of notes for another class, just copy the template folde
 ```bash
 cp -r ~/Documents/Gilles-Castel-s-Lecture-Notes-Math-Science-/course-template/ ~/Documents/my-algebra-course/
 code ~/Documents/my-algebra-course/
+```
+
+---
+
+## How to Use This Template (Tutorial)
+
+This section teaches you how to actually write lecture notes. If you've never used LaTeX before, read this whole section.
+
+### Creating a new lecture
+
+Every lecture is a separate `.tex` file. A blank template is included — copy it:
+
+1. In VS Code, right-click in the sidebar and select **New File**
+2. Name it `lec_02.tex` (or whatever number you're on)
+3. Copy the content from `lec_template.tex` into it
+4. Open `master.tex` and add this line before `\end{document}`:
+   ```latex
+   \input{lec_02.tex}
+   ```
+5. Edit the lecture header at the top of your new file:
+   ```latex
+   \lecture{2}{Wed 05 Feb 2025 14:00}{Subgroups and Cosets}
+   ```
+   - First argument: lecture number
+   - Second argument: date (shown in the margin)
+   - Third argument: topic title (shown as a heading)
+
+That's it. Press `Cmd + S` and the PDF updates with your new lecture.
+
+### Writing math
+
+**Inline math** — wrap with `$...$`:
+```latex
+The function $f(x) = x^2 + 3x + 1$ has roots at $x = \frac{-3 \pm \sqrt{5}}{2}$.
+```
+
+**Display math** (centered on its own line) — wrap with `\[...\]`:
+```latex
+\[
+    \int_0^\infty e^{-x^2} \, dx = \frac{\sqrt{\pi}}{2}
+\]
+```
+
+**Numbered equations** (so you can reference them later):
+```latex
+\begin{align}
+    E &= mc^2 \label{eq:einstein} \\
+    F &= ma \label{eq:newton}
+\end{align}
+As shown in Equation~\eqref{eq:einstein}, ...
+```
+
+### Common math syntax cheat sheet
+
+| What you want | What you type |
+|---|---|
+| Fraction | `\frac{a}{b}` |
+| Square root | `\sqrt{x}` or `\sqrt[3]{x}` |
+| Exponent | `x^2` or `x^{10}` |
+| Subscript | `x_1` or `x_{ij}` |
+| Greek letters | `\alpha`, `\beta`, `\gamma`, `\delta`, `\epsilon`, `\theta`, `\lambda`, `\pi`, `\sigma`, `\omega` |
+| Capital Greek | `\Gamma`, `\Delta`, `\Theta`, `\Lambda`, `\Pi`, `\Sigma`, `\Omega` |
+| Infinity | `\infty` |
+| Sum | `\sum_{i=1}^{n}` |
+| Product | `\prod_{i=1}^{n}` |
+| Integral | `\int_a^b` or `\iint` or `\iiint` |
+| Limit | `\lim_{x \to 0}` |
+| Partial derivative | `\frac{\partial f}{\partial x}` |
+| Vector | `\vec{v}` or `\mathbf{v}` |
+| Matrix | `\begin{pmatrix} a & b \\ c & d \end{pmatrix}` |
+| Dots | `\ldots` (low), `\cdots` (center), `\vdots` (vertical), `\ddots` (diagonal) |
+| Set notation | `\{1, 2, 3\}` (use `\{` and `\}` for curly braces) |
+| Element of | `x \in S` |
+| Subset | `A \subset B` or `A \subseteq B` |
+| Union/intersection | `A \cup B`, `A \cap B` |
+| Not equal | `\neq` |
+| Less/greater equal | `\leq`, `\geq` |
+| Approximately | `\approx` |
+| Arrow | `\to` or `\rightarrow`, `\mapsto` |
+| Implies | `\implies` (double arrow, already shortened in this template) |
+| If and only if | `\iff` |
+| For all / exists | `\forall`, `\exists` |
+| Blackboard bold | `\R` (reals), `\Z` (integers), `\Q` (rationals), `\N` (naturals), `\C` (complex) |
+
+### Using environments
+
+Environments are the boxed/labeled blocks for definitions, theorems, etc. The format is always:
+
+```latex
+\begin{environmentname}
+    Content goes here.
+\end{environmentname}
+```
+
+**Definition** (boxed, numbered):
+```latex
+\begin{definition}
+    A \textbf{metric space} is a set $X$ together with a function
+    $d : X \times X \to \R$ satisfying:
+    \begin{enumerate}
+        \item $d(x,y) \geq 0$ and $d(x,y) = 0 \iff x = y$
+        \item $d(x,y) = d(y,x)$
+        \item $d(x,z) \leq d(x,y) + d(y,z)$
+    \end{enumerate}
+\end{definition}
+```
+
+**Theorem + Proof**:
+```latex
+\begin{theorem}
+    Every convergent sequence is bounded.
+\end{theorem}
+
+\begin{proof}
+    Let $(a_n)$ converge to $L$. Then there exists $N$ such that
+    for all $n > N$, $|a_n - L| < 1$, so $|a_n| < |L| + 1$.
+    Let $M = \max\{|a_1|, \ldots, |a_N|, |L| + 1\}$.
+    Then $|a_n| \leq M$ for all $n$.
+\end{proof}
+```
+
+**Example** (ends with a diamond):
+```latex
+\begin{eg}
+    The sequence $a_n = 1/n$ converges to $0$.
+\end{eg}
+```
+
+**Other environments you can use** (same `\begin{...}` / `\end{...}` syntax):
+
+| Environment | What it's for |
+|---|---|
+| `definition` | Definitions (boxed, numbered) |
+| `theorem` | Theorems (boxed, numbered) |
+| `lemma` | Lemmas (boxed, numbered) |
+| `corollary` | Corollaries (boxed, numbered) |
+| `prop` | Propositions (boxed, numbered) |
+| `axiom` | Axioms (boxed, numbered) |
+| `conjecture` | Conjectures (boxed, numbered) |
+| `proof` | Proofs (ends with QED square) |
+| `eg` | Examples (ends with diamond) |
+| `remark` | Remarks |
+| `note` | Notes |
+| `notation` | Notation explanations |
+| `intuition` | Intuitive explanations |
+| `recall` | Recalling previous results |
+| `exercise` | Exercises |
+| `problem` | Problems |
+
+**Special colored boxes**:
+```latex
+\begin{correction}
+    Last lecture I said X. That was wrong. It should be Y.
+\end{correction}
+
+\begin{notebox}{Warning}
+    Don't confuse continuity with uniform continuity.
+\end{notebox}
+
+\begin{important}{Key Result}
+    This theorem is used in every proof for the rest of the course.
+\end{important}
+```
+
+### Sections and structure
+
+Use `\section{}` and `\subsection{}` to organize within a lecture:
+
+```latex
+\lecture{3}{Fri 07 Feb 2025 10:00}{Continuity}
+
+\section{Definition of Continuity}
+
+Text here...
+
+\subsection{Epsilon-Delta Definition}
+
+Text here...
+
+\section{Properties of Continuous Functions}
+
+Text here...
+```
+
+### Lists
+
+**Numbered list:**
+```latex
+\begin{enumerate}
+    \item First item
+    \item Second item
+    \item Third item
+\end{enumerate}
+```
+
+**Bullet list:**
+```latex
+\begin{itemize}
+    \item First point
+    \item Second point
+\end{itemize}
+```
+
+### Bold, italic, and emphasis
+
+```latex
+\textbf{bold text}
+\textit{italic text}
+\emph{emphasized text}   % italic in normal text, upright in italic context
+```
+
+### Adding a simple TikZ diagram inline
+
+```latex
+Here is a triangle:
+\begin{center}
+\begin{tikzpicture}
+    \draw (0,0) -- (3,0) -- (1.5,2) -- cycle;
+    \node[below] at (1.5,0) {base};
+\end{tikzpicture}
+\end{center}
+```
+
+### Full example: a real lecture
+
+Here's what a real lecture file looks like:
+
+```latex
+\lecture{5}{Wed 12 Feb 2025 10:00}{Sequences and Series}
+
+\section{Sequences}
+
+\begin{definition}
+    A \textbf{sequence} in $\R$ is a function $a : \N \to \R$.
+    We write $(a_n)_{n=1}^{\infty}$ or simply $(a_n)$.
+\end{definition}
+
+\begin{definition}
+    A sequence $(a_n)$ \textbf{converges} to $L \in \R$ if for every
+    $\epsilon > 0$ there exists $N \in \N$ such that
+    \[
+        n > N \implies |a_n - L| < \epsilon.
+    \]
+    We write $\lim_{n \to \infty} a_n = L$ or $a_n \to L$.
+\end{definition}
+
+\begin{eg}
+    Let $a_n = \frac{1}{n}$. We claim $a_n \to 0$.
+
+    Given $\epsilon > 0$, choose $N > \frac{1}{\epsilon}$.
+    Then for $n > N$:
+    \[
+        |a_n - 0| = \frac{1}{n} < \frac{1}{N} < \epsilon. \qedhere
+    \]
+\end{eg}
+
+\begin{theorem}
+    Every convergent sequence is bounded.
+\end{theorem}
+
+\begin{proof}
+    Let $a_n \to L$. Choose $N$ such that $|a_n - L| < 1$ for all $n > N$.
+    Then $|a_n| < |L| + 1$ for $n > N$.
+    Set $M = \max\{|a_1|, \ldots, |a_N|, |L| + 1\}$.
+    Then $|a_n| \leq M$ for all $n$.
+\end{proof}
+
+\begin{remark}
+    The converse is false: $a_n = (-1)^n$ is bounded but does not converge.
+\end{remark}
+
+\section{Series}
+
+\begin{definition}
+    Given a sequence $(a_n)$, the \textbf{series} $\sum_{n=1}^{\infty} a_n$
+    is defined as the limit of partial sums:
+    \[
+        \sum_{n=1}^{\infty} a_n = \lim_{N \to \infty} \sum_{n=1}^{N} a_n
+    \]
+    provided the limit exists.
+\end{definition}
+
+\begin{important}{Divergence Test}
+    If $\sum a_n$ converges, then $a_n \to 0$.
+    Equivalently: if $a_n \not\to 0$, then $\sum a_n$ diverges.
+\end{important}
 ```
 
 ---
@@ -366,7 +652,7 @@ code "%USERPROFILE%\Documents\Gilles-Castel-s-Lecture-Notes-Math-Science-\lectur
 3. Press `Ctrl + Shift + P`, type `latex pdf`, click **"LaTeX Workshop: View LaTeX PDF file"**
 4. The PDF opens in a side tab. It updates automatically on every save.
 
-### Step 10: Install Inkscape (optional)
+### Step 9: Install Inkscape (optional)
 
 Download from [https://inkscape.org/release/](https://inkscape.org/release/) and install.
 
@@ -480,6 +766,7 @@ sudo apt install -y inkscape
     ├── master.tex               # Main document — compile this file
     ├── preamble.tex             # All packages, macros, and environments
     ├── lec_01.tex               # Lecture 1 (example with all features)
+    ├── lec_template.tex         # Blank template — copy this for new lectures
     ├── build.sh                 # Standalone compile script (macOS/Linux)
     ├── figures/                 # Place Inkscape SVGs here
     │   └── .gitkeep
